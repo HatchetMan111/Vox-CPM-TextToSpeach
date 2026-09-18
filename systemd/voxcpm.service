@@ -1,0 +1,15 @@
+[Unit]
+Description=VoxCPM TTS Web UI (Gradio)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/voxcpm/voxcpm.conf
+ExecStart=/opt/voxcpm/venv/bin/python /opt/voxcpm/app-src/app.py --host ${WEB_HOST} --port ${WEB_PORT} --device ${DEVICE} --model-id ${MODEL_ID}
+WorkingDirectory=/opt/voxcpm/app-src
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
