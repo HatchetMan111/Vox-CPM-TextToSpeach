@@ -30,7 +30,8 @@ bash -c "$(wget -qLO - https://raw.githubusercontent.com/HatchetMan111/Vox-CPM-T
 ```
 
 Das Script fragt interaktiv ab (mit sinnvollen Defaults):
-`CT-ID` (160) · Hostname · vCPU (4) · RAM (8192) · Disk (20G) ·
+`CT-ID` (160, Wunsch — **ist sie belegt, wird automatisch die nächste freie genommen**) ·
+Hostname · vCPU (4) · RAM (8192) · Disk (20G) ·
 Storage (`local-lvm`) · Bridge (`vmbr0`, DHCP) · Web-Port (8808) ·
 Modell (`openbmb/VoxCPM2`) · Device (`cpu`).
 
@@ -63,15 +64,17 @@ Danach läuft vollautomatisch:
 Web UI öffnen → Text eingeben → optional Referenz-Audio hochladen +
 Control-Instruction setzen → **Generate Speech** → Audio anhören/exportieren.
 
-## 2 · Update
+## 2 · Update / Neuinstallation
 
-Einfach den Einzeiler erneut ausführen — bei existierender CT-ID wird
-automatisch der **Update-Modus** angeboten (Container bleibt, Code + Deps
-werden aktualisiert, Service restartet). Idempotent, mehrfach lauffähig.
+Jeder Einzeiler-Lauf erstellt einen **neuen Container** — ist die Wunsch-ID
+belegt, nimmt das Script automatisch die nächste freie (kein Abbruch, keine
+Rückfrage). `setup-container.sh` selbst bleibt idempotent und kann im
+bestehenden Container erneut laufen:
 
 ```bash
-bash -c "$(wget -qLO - https://raw.githubusercontent.com/HatchetMan111/Vox-CPM-TextToSpeach/main/install/voxcpm.sh)"
-# -> "CT 160 existiert. Setup erneut ausführen (Update)?" -> Ja
+# Aktuelle Dateien in den laufenden Container schieben + Setup erneut:
+pct push 160 /pfad/zu/setup-container.sh /opt/voxcpm/setup-container.sh
+pct exec 160 -- bash /opt/voxcpm/setup-container.sh
 ```
 
 Modell/Device/Port nachträglich ändern:
